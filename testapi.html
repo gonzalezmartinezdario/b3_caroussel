@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>testing api</title>
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+
+<script>
+    $(document).ready(function(){        
+        var slides = 
+            [
+            {id:10, title:"title 1" , description:"description 1" , url:"url 1" , slide:"slide 1" },
+            {id: 2, title: "title 2", description:"description 1" , url:"url 1" , slide:"slide 2" },
+            {id: 60, title:"title 3", description:"description 1" , url: "url 1", slide:"slide 3" }
+            ];
+        
+        $.ajax({
+          type: "PUT",
+          url: "http://localhost/wordpress/wp-json/b3caroussel/v1/slideshow",
+          data: "request="+JSON.stringify(slides),
+          success: function(msg){
+                alert( "Data Saved: " + msg );
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+          }
+        });
+        /*$.ajax({
+          type: "GET",
+          url: "http://localhost/wordpress/wp-json/b3caroussel/v1/slideshow",
+          data: '',
+          success: function(msg){
+                alert( "Data Saved: " + JSON.stringify(msg) );
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+          }
+        })*/
+});
+</script>
+</body>
+</html>
