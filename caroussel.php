@@ -83,11 +83,26 @@ function wporg_options_page_html() {
                   <br>                 
                   <div ng-show="!ctrl.loadingSlides">
                     <div ng-repeat="slide in ctrl.items">
-                        <div class="diapositiva">
-                            <p>{{slide.title}} </p>
-                            <p>{{slide.description}} </p>
-                            <p>{{slide.url}} </p>
-                            <p>{{slide.slide}} </p>
+                        <div class="panel panel-primary">
+                           <div class="panel-heading clearfix">
+                               
+                                <span class="pull-left" style="padding-top: 5px;">Imagen de la diapositiva</span>
+                                  <div class="btn-group pull-right">
+                                     <button aria-label="Left Align" class="btn btn-primary btn-sm">
+                                         <span class="glyphicon glyphicon-pencil"></span>
+                                     </button>                                     <button aria-label="Left Align" class="btn btn-primary btn-sm">
+                                         <span class="glyphicon glyphicon-remove"></span>
+                                     </button>                                   
+                                  </div>
+                           </div>                       
+                           <div class="panel-body">
+                           <label for="titulo">Titulo </label>
+                            <input type="text" class="form-control" ng-model="slide.title">     
+                            <label for="Description">Descripcion</label>      
+                            <textarea cols="30" rows="5" class="form-control" ng-model="slide.description"></textarea>             
+                            <label for="url">URL</label>
+                            <input type="text" class="form-control" ng-model="slide.url">                                   
+                           </div>     
                         </div>
                     </div>
                     <br>
