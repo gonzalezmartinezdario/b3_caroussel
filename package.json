@@ -1,0 +1,28 @@
+{
+  "name": "caroussel",
+  "version": "1.0.0",
+  "description": "This is a plugin for creating custom caroussels using bootstrap css framework version 3.6.7",
+  "main": "caroussel4ursite.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "caroussel",
+    "boostrap",
+    "3",
+    "custom"
+  ],
+  "author": "The D",
+  "license": "ISC",
+  "dependencies": {
+    "@angular/http": "^7.2.15",
+    "angular": "^1.7.8",
+    "angular-resource": "^1.7.8",
+    "angular-route": "^1.7.8",
+    "angular-sanitize": "^1.7.8",
+    "bootstrap": "^3.4.1",
+    "font-awesome": "^4.7.0",
+    "fontawesome": "^5.6.3",
+    "jquery": "^3.4.1"
+  }
+}

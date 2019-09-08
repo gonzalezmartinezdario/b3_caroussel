@@ -1,6 +1,11 @@
-.diapositiva{
- /*   width: 470px;
-    height: 200px;
-    border: solid 1px black;
-    border-radius: 10px;*/
+.pan{
+    min-width: 650px;
 }
+
+.pic{
+    width: 150px;
+    height: 150px;    
+}
+
+
+

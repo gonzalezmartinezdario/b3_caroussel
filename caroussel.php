@@ -61,6 +61,7 @@ register_activation_hook(__FILE__,'addFirstSlideshow');
 
 //Admin Page----------------------------
 function wporg_options_page_html() {
+    wp_enqueue_media();
     // check user capabilities
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
@@ -71,42 +72,47 @@ function wporg_options_page_html() {
               <div class="navbar-header">
                   <h1>
                   <?php echo get_admin_page_title();?> 
-                  <button type="button" class="btn btn-primary" aria-label="Left Align">
+                  <button type="button" class="btn btn-primary" aria-label="Left Align" ng-click="ctrl.addSlide()">
                       <span class="glyphicon glyphicon-plus" aria-hidden="true"> 
                       </span>
                       Nueva diapositiva
                   </button>                  
                   </h1>                      
-                  <br>
+                  <br>                  
                   <input type="hidden" id="homeAddress" value="<?php echo get_home_url(); ?>">
                   <img src="<?php echo get_home_url()."/wp-content/plugins/caroussel4ursite/loading.gif"; ?>" alt="Loading" ng-show="ctrl.loadingSlides">                  
                   <br>                 
                   <div ng-show="!ctrl.loadingSlides">
                     <div ng-repeat="slide in ctrl.items">
-                        <div class="panel panel-primary">
-                           <div class="panel-heading clearfix">
-                               
+                        <div class="panel panel-primary pan">
+                           <div class="panel-heading clearfix">                 
                                 <span class="pull-left" style="padding-top: 5px;">Imagen de la diapositiva</span>
                                   <div class="btn-group pull-right">
-                                     <button aria-label="Left Align" class="btn btn-primary btn-sm">
+                                     <button aria-label="Left Align" class="btn btn-primary btn-sm" ng-click="ctrl.mediaLibrary($index)">
                                          <span class="glyphicon glyphicon-pencil"></span>
-                                     </button>                                     <button aria-label="Left Align" class="btn btn-primary btn-sm">
-                                         <span class="glyphicon glyphicon-remove"></span>
+                                     </button>                                     <button aria-label="Left Align" class="btn btn-primary btn-sm" ng-click="ctrl.removeSlide($index)">
+                                         <span class="glyphicon glyphicon-remove" ></span>
                                      </button>                                   
                                   </div>
-                           </div>                       
-                           <div class="panel-body">
-                           <label for="titulo">Titulo </label>
-                            <input type="text" class="form-control" ng-model="slide.title">     
-                            <label for="Description">Descripcion</label>      
-                            <textarea cols="30" rows="5" class="form-control" ng-model="slide.description"></textarea>             
-                            <label for="url">URL</label>
-                            <input type="text" class="form-control" ng-model="slide.url">                                   
-                           </div>     
+                           </div>                                                 
+                           <div class="panel-body">                           
+                           <div class="row">
+                               <div class="col-xs-3 col-md-3">                   
+                                   <img ng-src="{{slide.slide}}" alt="Diapositiva" class="pic">         
+                               </div>
+                               <div class="col-xs-9 col-md-9">
+                                   <label for="titulo">Titulo </label>
+                                       <input type="text" class="form-control" ng-model="slide.title">     
+                                       <label for="Description">Descripcion</label>    
+                                       <textarea cols="30" rows="5" class="form-control" ng-model="slide.description"></textarea>                      
+                                       <input type="text" class="form-control" ng-model="slide.url" style="margin-top:3px;">             
+                               </div>
+                           </div>
+                           </div>                           
                         </div>
                     </div>
                     <br>
-                     <button type="button" class="btn btn-success" aria-label="Left Align">
+                     <button type="button" class="btn btn-success" aria-label="Left Align" ng-click="ctrl.saveChanges()">
                       <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"> 
                       </span>
                       Guardar
@@ -153,26 +159,29 @@ function postSlideshowSlides($data){
     foreach($resultArray as $key=>$value){
         /*$wpdb->query("INSERT INTO {$prefix}diapositiva(title, description, url, slide)
         values('{$value["title"]}', '{$value["description"]}', '{$value["url"]}', '{$value["slide"]}');");*/
-        $queryArray[]="INSERT INTO {$prefix}diapositiva(title, description, url, slide)
-        values('{$value["title"]}', '{$value["description"]}', '{$value["url"]}', '{$value["slide"]}');";
+        /*$queryArray[]="INSERT INTO {$prefix}diapositiva(title, description, url, slide)
+        values('{$value["title"]}', '{$value["description"]}', '{$value["url"]}', '{$value["slide"]}');";*/
+        $wpdb->query("INSERT INTO {$prefix}diapositiva(title, description, url, slide)
+        values('{$value["title"]}', '{$value["description"]}', '{$value["url"]}', '{$value["slide"]}');");
     }
     
-    return $queryArray;    
+    return;    
 }
 //Delete elements
 function deleteSlideshowSlides($data){
     global $wpdb;
     $prefix=$wpdb->prefix."b3_";
-    $resultArray=json_decode($data["request"], true);
+    $resultArray=json_decode($data["request"], true);        
     $queryArray=array();
     
     foreach($resultArray as $key=>$value){
         /*$wpdb->query("INSERT INTO {$prefix}diapositiva(title, description, url, slide)
         values('{$value["title"]}', '{$value["description"]}', '{$value["url"]}', '{$value["slide"]}');");*/
-        $queryArray[]="DELETE FROM {$prefix}diapositiva WHERE id={$value["id"]};";
+        /*$queryArray[]="DELETE FROM {$prefix}diapositiva WHERE id={$value["id"]};";*/
+        $wpdb->query("DELETE FROM {$prefix}diapositiva WHERE id={$value["id"]};");
     }
     
-    return $queryArray;
+    return $resultArray;
     
     
 }
@@ -180,18 +189,23 @@ function deleteSlideshowSlides($data){
 function putSlideshowSlides($data){
     global $wpdb;    
     $prefix=$wpdb->prefix."b3_";
-    $resultArray=json_decode($data["request"], true);
+    $resultArray=json_decode($data["request"], true);    
     $queryArray=array();
     
     foreach($resultArray as $key=>$value){
         /*$wpdb->query("INSERT INTO {$prefix}diapositiva(title, description, url, slide)
         values('{$value["title"]}', '{$value["description"]}', '{$value["url"]}', '{$value["slide"]}');");*/
-        $queryArray[]="UPDATE TABLE {$prefix}diapositiva         
+        /*$wpdb->query("UPDATE TABLE {$prefix}diapositiva         
         set title= '{$value["title"]}', 
         description='{$value["description"]}',
         url= '{$value["url"]}', 
         slide= '{$value["slide"]}')
-        WHERE id={$value["id"]};";
+        WHERE id={$value["id"]};");
+        */
+        $wpdb->query("UPDATE {$prefix}diapositiva set title= '{$value["title"]}',
+        description='{$value["description"]}',url= '{$value["url"]}',
+        slide= '{$value["slide"]}'
+        WHERE id={$value["id"]};");
     }
     
     return $queryArray;    
@@ -230,6 +244,7 @@ wp_enqueue_script('Jquery',plugin_dir_url(__FILE__).'node_modules/jquery/dist/jq
 wp_enqueue_script('angularjs',plugin_dir_url(__FILE__).'node_modules/angular/angular.js');     
 wp_enqueue_script('ngResource',plugin_dir_url(__FILE__).'node_modules/angular-resource/angular-resource.js');
 wp_enqueue_script('app',plugin_dir_url(__FILE__).'b3_caroussel_app.js');    
+wp_enqueue_script('mediaLibrary',plugin_dir_url(__FILE__).'imgscript.js');    
 }
 add_action('admin_enqueue_scripts', 'addScripts');
 //------------------------------

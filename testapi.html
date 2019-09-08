@@ -20,11 +20,11 @@
             ];
         
         $.ajax({
-          type: "PUT",
+          type: "DELETE",
           url: "http://localhost/wordpress/wp-json/b3caroussel/v1/slideshow",
           data: "request="+JSON.stringify(slides),
           success: function(msg){
-                alert( "Data Saved: " + msg );
+                alert( "Data Saved: " + JSON.stringify(msg) );
           },
           error: function(XMLHttpRequest, textStatus, errorThrown) {
              alert(errorThrown);
