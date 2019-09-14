@@ -142,7 +142,7 @@ angular.module("b3_caroussel",[]).controller("mainSlider",function($scope, $http
         self.frame.on('select', function(){
             extScope.$apply(function(){                
                 //Get de img details
-                var attachment=self.frame.state().get('selection').first().toJSON();                    
+                var attachment=self.frame.state().get('selection').first().toJSON(); //alert(JSON.stringify(attachment.sizes));
                 self.items[idSlide].slide=attachment.sizes.thumbnail.url;       
             });
             

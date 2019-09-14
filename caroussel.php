@@ -236,6 +236,88 @@ add_action( 'rest_api_init', function () {
 } );
 //------------------------------
 
+//Style-------------------------
+function styleAdding(){
+    wp_enqueue_style( 'my-js', plugin_dir_url(__FILE__).'node_modules/bootstrap/dist/css/bootstrap.css', false );
+    wp_enqueue_style( 'b3_caroussel_theme', plugin_dir_url(__FILE__).'/b3_caroussel_theme.css', false );
+}
+add_action('wp_enqueue_scripts', 'styleAdding');
+//------------------------------
+
+//Shortcode---------------------
+function b3_caroussel_shortcodes_init(){
+    function b3_caroussel_shortcode(){
+        global $wpdb;
+        $content="";
+        $diapositivas=$wpdb->get_results('
+            SELECT * FROM wp_b3_diapositiva;            
+        ');
+        
+        if(empty($diapositivas))
+        {
+            echo "No hay diapositivas";
+            return null;
+        }        
+        //echo $wpdb->num_rows;
+        $content.="<div  id='carousel-example-generic' class='carousel slide' data-ride='carousel'>";
+        $content.=" <ol class='carousel-indicators'>";
+        $content.="<li data-target='#carousel-example-generic' data-slide-to='0' class='active'></li>";
+        for($i=1;$i<$wpdb->num_rows;$i++){
+            $content.="<li data-target='#carousel-example-generic' data-slide-to='{$i}'></li>";
+        }
+        
+        $content.="</ol>";
+        $content.=" <div class='carousel-inner' role='listbox'>";
+        $first=true;
+        foreach($diapositivas as $diapositiva){
+            $diapositivaURL=str_replace("-150x150","",$diapositiva->slide);
+            if($first){
+            $content.="
+            <div class='item active'>
+                <img class='b3_caroussel_img' src='{$diapositivaURL}' alt='Slide'>
+                 <div class='carousel-caption'>
+                    <a href='{$diapositiva->url}'><h1 class='b3_slide_title'>{$diapositiva->title}</h1></a>
+                    <p>{$diapositiva->description}</p>
+                 </div>
+            </div>
+            ";   
+            $first=false;
+            }else{
+            $content.="
+            <div class='item'>
+                <img class='b3_caroussel_img' src='{$diapositivaURL}' alt='Slide'>
+                 <div class='carousel-caption'>
+                    <a href='{$diapositiva->url}'><h1 class='b3_slide_title'>{$diapositiva->title}</h1></a>
+                    <p>{$diapositiva->description}</p>
+                 </div>
+            </div>
+            ";
+        }
+        }
+        $content.=" </div>";        
+        $content.="
+        <a class='left carousel-control' href='#carousel-example-generic' role='button' data-slide='prev'>
+            <span class='glyphicon glyphicon-chevron-left' aria-hidden='false'></span>
+            <span class='sr-only'>Previous</span>
+        </a>
+        <a class='right carousel-control' href='#carousel-example-generic' role='button' data-slide='next'>
+            <span class='glyphicon glyphicon-chevron-right' aria-hidden='true'>
+            </span>
+            <span class='sr-only'>Previous</span>
+        </a>
+    </div>
+        ";        
+        echo $content;
+        
+        return $content;
+    }
+    add_shortcode('b3_caroussel', 'b3_caroussel_shortcode');
+}
+add_action('init', 'b3_caroussel_shortcodes_init');
+
+//------------------------------
+
+
 //Scipts------------------------------
 function addScripts(){    
 wp_enqueue_style('b3',plugin_dir_url(__FILE__).'node_modules/bootstrap/dist/css/bootstrap.css');    
@@ -248,5 +330,7 @@ wp_enqueue_script('mediaLibrary',plugin_dir_url(__FILE__).'imgscript.js');
 }
 add_action('admin_enqueue_scripts', 'addScripts');
 //------------------------------
+
+
 
 ?>
